@@ -2,6 +2,7 @@ import streamlit as st
 import google.generativeai as genai
 from PIL import Image
 import io
+st.sidebar.warning(f"SDK Version: {genai.__version__}")
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
