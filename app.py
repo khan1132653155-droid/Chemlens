@@ -221,7 +221,7 @@ try:
         st.stop()
     genai.configure(api_key=_secret_key)
     model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
+        model_name="gemini-1.5-flash-latest",
         system_instruction=SYSTEM_INSTRUCTION
     )
 except Exception as e:
