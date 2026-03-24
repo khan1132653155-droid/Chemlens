@@ -18,14 +18,15 @@ st.markdown("""
 
 :root {
     --bg: #0a0a0f;
-    --surface: #111118;
-    --surface2: #1a1a24;
+    --surface: #13131c;
+    --surface2: #1e1e2d;
     --border: #2a2a3a;
-    --accent: #00ff88;
-    --accent2: #7c3aed;
+    --accent: #00e57a;
+    --accent-dark: #009952;
+    --accent2: #8b5cf6;
     --accent3: #ff6b35;
     --text: #e8e8f0;
-    --muted: #6b6b80;
+    --muted: #8b8b9e;
 }
 
 * { box-sizing: border-box; }
@@ -36,10 +37,11 @@ html, body, [data-testid="stAppViewContainer"] {
     font-family: 'Syne', sans-serif !important;
 }
 
+/* 3D Ambient Lighting */
 [data-testid="stAppViewContainer"] {
     background:
-        radial-gradient(ellipse at 10% 20%, rgba(124,58,237,0.08) 0%, transparent 50%),
-        radial-gradient(ellipse at 90% 80%, rgba(0,255,136,0.06) 0%, transparent 50%),
+        radial-gradient(circle at 15% 20%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(0, 229, 122, 0.1) 0%, transparent 40%),
         var(--bg) !important;
 }
 
@@ -47,6 +49,7 @@ html, body, [data-testid="stAppViewContainer"] {
 [data-testid="stSidebar"] {
     background: var(--surface) !important;
     border-right: 1px solid var(--border) !important;
+    box-shadow: 5px 0 20px rgba(0,0,0,0.3);
 }
 
 #MainMenu, footer, header { visibility: hidden; }
@@ -55,23 +58,24 @@ html, body, [data-testid="stAppViewContainer"] {
 /* ── Hero ── */
 .hero {
     text-align: center;
-    padding: 2rem 0 1rem;
+    padding: 2.5rem 0 1.5rem;
 }
 .hero-badge {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(0,255,136,0.1), rgba(124,58,237,0.1));
-    border: 1px solid rgba(0,255,136,0.3);
+    background: linear-gradient(135deg, rgba(0,229,122,0.15), rgba(139,92,246,0.15));
+    border: 1px solid rgba(0,229,122,0.4);
+    box-shadow: 0 4px 15px rgba(0,229,122,0.15);
     color: var(--accent);
     font-family: 'Space Mono', monospace;
     font-size: 0.65rem;
     letter-spacing: 0.2em;
-    padding: 0.3rem 0.9rem;
+    padding: 0.4rem 1.2rem;
     border-radius: 2rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 1rem;
     text-transform: uppercase;
 }
 .hero-title {
-    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-size: clamp(2.8rem, 8vw, 4.5rem);
     font-weight: 800;
     line-height: 1;
     margin: 0.3rem 0;
@@ -79,147 +83,167 @@ html, body, [data-testid="stAppViewContainer"] {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.04em;
+    filter: drop-shadow(0px 4px 10px rgba(0,0,0,0.5));
 }
 .hero-sub {
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     font-family: 'Space Mono', monospace;
-    margin-top: 0.3rem;
+    margin-top: 0.5rem;
 }
 
-/* ── Result Card ── */
+/* ── Pro 3D Buttons ── */
+.stButton > button {
+    background: linear-gradient(145deg, var(--accent), var(--accent-dark)) !important;
+    color: #050508 !important;
+    font-family: 'Syne', sans-serif !important;
+    font-weight: 800 !important;
+    font-size: 0.95rem !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 0.75rem 2rem !important;
+    width: 100% !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    /* 3D Bevel and Shadow */
+    box-shadow: 
+        0 6px 0 #006636, 
+        0 12px 20px rgba(0,229,122,0.3),
+        inset 0 2px 2px rgba(255,255,255,0.4) !important;
+    transition: all 0.1s ease !important;
+    margin-bottom: 6px !important; /* Make room for 3D press */
+}
+
+.stButton > button:hover {
+    filter: brightness(1.1);
+}
+
+.stButton > button:active {
+    transform: translateY(6px) !important; /* Button pushes down */
+    box-shadow: 
+        0 0 0 #006636, 
+        0 4px 10px rgba(0,229,122,0.2),
+        inset 0 2px 2px rgba(255,255,255,0.4) !important;
+}
+
+/* Secondary Button Style (For Clear/Cancel) */
+button[kind="secondary"] {
+    background: linear-gradient(145deg, var(--surface2), var(--surface)) !important;
+    color: var(--text) !important;
+    box-shadow: 
+        0 6px 0 #0a0a0f, 
+        0 12px 20px rgba(0,0,0,0.4),
+        inset 0 2px 2px rgba(255,255,255,0.05) !important;
+}
+button[kind="secondary"]:active {
+    transform: translateY(6px) !important;
+    box-shadow: 
+        0 0 0 #0a0a0f, 
+        0 4px 10px rgba(0,0,0,0.4),
+        inset 0 2px 2px rgba(255,255,255,0.05) !important;
+}
+
+/* ── Result Card (Glassmorphism) ── */
 .result-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: rgba(19, 19, 28, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 16px;
     padding: 1.8rem;
     margin-top: 1.2rem;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
 }
 .result-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
 }
 .result-tag {
     display: inline-block;
     font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
+    font-size: 0.65rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
+    font-weight: 700;
     color: var(--accent);
-    background: rgba(0,255,136,0.08);
-    border: 1px solid rgba(0,255,136,0.2);
-    padding: 0.2rem 0.7rem;
-    border-radius: 4px;
+    background: rgba(0,229,122,0.1);
+    border: 1px solid rgba(0,229,122,0.3);
+    padding: 0.3rem 0.8rem;
+    border-radius: 6px;
     margin-bottom: 1rem;
+    box-shadow: 0 4px 10px rgba(0,229,122,0.1);
 }
 .result-tag.retro {
     color: #a78bfa;
-    background: rgba(124,58,237,0.08);
-    border-color: rgba(124,58,237,0.2);
+    background: rgba(139,92,246,0.1);
+    border-color: rgba(139,92,246,0.3);
+    box-shadow: 0 4px 10px rgba(139,92,246,0.1);
 }
 .result-tag.compound {
     color: #fb923c;
-    background: rgba(255,107,53,0.08);
-    border-color: rgba(255,107,53,0.2);
+    background: rgba(255,107,53,0.1);
+    border-color: rgba(255,107,53,0.3);
+    box-shadow: 0 4px 10px rgba(255,107,53,0.1);
 }
 
-/* ── Streamlit overrides ── */
-.stButton > button {
-    background: linear-gradient(135deg, var(--accent), #00cc6a) !important;
-    color: #0a0a0f !important;
-    font-family: 'Syne', sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 0.9rem !important;
-    border: none !important;
-    border-radius: 10px !important;
-    padding: 0.65rem 2rem !important;
-    width: 100% !important;
-    transition: all 0.2s !important;
-}
-.stButton > button:hover {
-    transform: translateY(-1px) !important;
-    box-shadow: 0 8px 25px rgba(0,255,136,0.25) !important;
-}
-
+/* ── Inputs & Tabs ── */
 [data-testid="stFileUploader"] {
-    background: var(--surface) !important;
-    border: 1.5px dashed var(--border) !important;
-    border-radius: 12px !important;
+    background: rgba(30, 30, 45, 0.5) !important;
+    border: 2px dashed rgba(255,255,255,0.1) !important;
+    border-radius: 16px !important;
+    transition: all 0.3s ease !important;
 }
 [data-testid="stFileUploader"]:hover {
     border-color: var(--accent) !important;
-}
-
-.stTextInput > div > div > input,
-.stTextArea > div > div > textarea {
-    background: var(--surface2) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 8px !important;
-    color: var(--text) !important;
-    font-family: 'Space Mono', monospace !important;
-    font-size: 0.82rem !important;
-}
-.stTextInput > div > div > input:focus {
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 2px rgba(0,255,136,0.1) !important;
+    background: rgba(0,229,122,0.05) !important;
 }
 
 .stTabs [data-baseweb="tab-list"] {
     background: var(--surface) !important;
-    border-radius: 10px !important;
-    padding: 4px !important;
-    gap: 4px !important;
+    border-radius: 12px !important;
+    padding: 6px !important;
+    gap: 6px !important;
     border: 1px solid var(--border) !important;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.5) !important;
 }
 .stTabs [data-baseweb="tab"] {
     background: transparent !important;
     color: var(--muted) !important;
     border-radius: 8px !important;
     font-family: 'Syne', sans-serif !important;
-    font-weight: 600 !important;
-    font-size: 0.85rem !important;
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
 }
 .stTabs [aria-selected="true"] {
     background: var(--surface2) !important;
     color: var(--text) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1) !important;
 }
 
 [data-testid="stCameraInput"] {
     background: var(--surface) !important;
-    border: 1.5px dashed var(--border) !important;
-    border-radius: 12px !important;
-}
-
-.stSelectbox > div > div {
-    background: var(--surface2) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 8px !important;
-    color: var(--text) !important;
-}
-
-.stNumberInput > div > div > input {
-    background: var(--surface2) !important;
-    border: 1px solid var(--border) !important;
-    border-radius: 8px !important;
-    color: var(--text) !important;
-    font-family: 'Space Mono', monospace !important;
+    border: 2px solid var(--border) !important;
+    border-radius: 16px !important;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
 .section-divider {
     border: none;
-    border-top: 1px solid var(--border);
-    margin: 1.2rem 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    margin: 1.5rem 0;
 }
 
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 6px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
 </style>
 """, unsafe_allow_html=True)
 
@@ -233,6 +257,8 @@ if "history" not in st.session_state:
     st.session_state.history = []
 if "current_image" not in st.session_state:
     st.session_state.current_image = None
+if "camera_active" not in st.session_state:
+    st.session_state.camera_active = False
 
 
 # ── Configure Gemini Securely ──────────────────────────────────────────────────
@@ -240,15 +266,14 @@ SYSTEM_INSTRUCTION = """You are an expert chemistry assistant with deep knowledg
 organic, inorganic, physical, and analytical chemistry. You provide accurate, 
 structured, and educational chemistry analysis. Always use proper chemical notation."""
 
-# Safely fetch the API key from Streamlit Secrets
-try:
-    api_key = st.secrets["GEMINI_API_KEY"]
-except (KeyError, FileNotFoundError):
-    st.error("🚨 API key not found! Developer: Please add GEMINI_API_KEY to Streamlit Secrets.")
-    st.stop()
+# Priority: Streamlit Secrets → fallback to None
+_secret_key = st.secrets.get("GEMINI_API_KEY", "") if hasattr(st, "secrets") else ""
 
 try:
-    genai.configure(api_key=api_key)
+    if not _secret_key:
+        st.error("🚨 API key not found! Developer: Please add GEMINI_API_KEY to Streamlit Secrets.")
+        st.stop()
+    genai.configure(api_key=_secret_key)
     model = genai.GenerativeModel(
         model_name="gemini-1.5-flash",
         system_instruction=SYSTEM_INSTRUCTION
@@ -260,10 +285,9 @@ except Exception as e:
 
 # ── Sidebar — Settings + History ───────────────────────────────────────────────
 with st.sidebar:
-    st.markdown("### ⚗️ ChemLens")
+    st.markdown("### ⚗️ ChemLens Pro")
     st.markdown("---")
 
-    # Explain level toggle
     st.markdown("**🎓 Explanation Level**")
     explain_level = st.select_slider(
         label="Level",
@@ -274,7 +298,6 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # History
     st.markdown("**📋 Analysis History**")
     if st.session_state.history:
         for i, item in enumerate(reversed(st.session_state.history[-10:])):
@@ -298,9 +321,8 @@ st.markdown("""
 
 
 # ── Mode selector ──────────────────────────────────────────────────────────────
-st.markdown("#### Select Analysis Mode")
 mode = st.segmented_control(
-    label="Mode",
+    label="Analysis Mode",
     options=["⚗️ Reaction Predictor", "🔄 Retrosynthesis", "🔬 Compound Identifier"],
     default="⚗️ Reaction Predictor",
     label_visibility="collapsed"
@@ -319,7 +341,7 @@ st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
 # ── Yield calculator (reaction mode only) ─────────────────────────────────────
 mass1, mass2 = None, None
 if is_reaction:
-    with st.expander("⚖️ Optional: Yield Calculator — enter reactant masses"):
+    with st.expander("⚖️ Optional: Yield Calculator (Enter reactant masses)"):
         col1, col2 = st.columns(2)
         with col1:
             mass1 = st.number_input("Reactant 1 mass (g)", min_value=0.0, step=0.1, format="%.2f")
@@ -329,24 +351,36 @@ if is_reaction:
 
 # ── Image input ───────────────────────────────────────────────────────────────
 if is_reaction:
-    label = "📸 Capture or Upload Reactants"
+    label = "📸 Reactants"
     hint  = "Photo of written/drawn reactants — whiteboard, textbook, paper"
 elif is_retro:
-    label = "🔬 Capture or Upload Target Molecule"
+    label = "🔬 Target Molecule"
     hint  = "Photo of the molecule you want to synthesize"
 else:
-    label = "🧪 Capture or Upload Compound"
+    label = "🧪 Compound"
     hint  = "Photo of any chemical structure or compound name"
 
-st.markdown(f"**{label}**")
+st.markdown(f"**{label} Input**")
 st.caption(hint)
 
-tab_cam, tab_gal = st.tabs(["📷 Camera", "🖼️ Gallery / Upload"])
+tab_cam, tab_gal = st.tabs(["📷 3D Camera Lens", "🖼️ Smart Gallery"])
 
 with tab_cam:
-    cam = st.camera_input(label="Camera", label_visibility="collapsed", key=f"cam_{mode}")
-    if cam:
-        st.session_state.current_image = Image.open(io.BytesIO(cam.getvalue()))
+    # --- PRO CAMERA TOGGLE LOGIC ---
+    if not st.session_state.camera_active:
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("🎥 Enable Camera", use_container_width=True):
+            st.session_state.camera_active = True
+            st.rerun()
+    else:
+        cam = st.camera_input(label="Camera", label_visibility="collapsed", key=f"cam_{mode}")
+        if cam:
+            st.session_state.current_image = Image.open(io.BytesIO(cam.getvalue()))
+            st.session_state.camera_active = False # Turn off after snap
+            st.rerun()
+        if st.button("❌ Close Camera", use_container_width=True, type="secondary"):
+            st.session_state.camera_active = False
+            st.rerun()
 
 with tab_gal:
     upl = st.file_uploader(
@@ -421,12 +455,6 @@ Disconnection 1:
 • Synthetic equivalent (reagent): 
 • Transform type: 
 
-Disconnection 2:
-• Bond broken: 
-• Synthon: 
-• Synthetic equivalent (reagent): 
-• Transform type: 
-
 [Continue for all necessary disconnections]
 
 🧱 STARTING MATERIALS
@@ -482,9 +510,6 @@ Respond in this EXACT format:
 • Key risks: 
 • First aid measures: 
 • Storage requirements: 
-
-📚 ADDITIONAL NOTES
-[Interesting chemistry or context about this compound]
 """
 
 PROMPTS = {
@@ -504,7 +529,7 @@ if st.session_state.current_image:
     st.markdown("<hr class='section-divider'>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.image(st.session_state.current_image, caption="Your image", use_container_width=True)
+        st.image(st.session_state.current_image, caption="Current Selection", use_container_width=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -516,7 +541,7 @@ if st.session_state.current_image:
 
     button_clicked = st.button(btn_labels[mode_key], use_container_width=True)
 
-    # 1. GENERATION + STREAMING — only on button click
+    # 1. GENERATION + STREAMING
     if button_clicked:
         try:
             with st.spinner("Analyzing with Gemini Vision..."):
@@ -534,7 +559,6 @@ if st.session_state.current_image:
             </div>
             """, unsafe_allow_html=True)
 
-            # Stream with native Streamlit
             def stream_response(r):
                 for chunk in r:
                     if chunk.text:
@@ -542,7 +566,6 @@ if st.session_state.current_image:
 
             full_text = st.write_stream(stream_response(response))
 
-            # Persist to session state
             st.session_state.analysis_result = full_text
             st.session_state.analysis_mode   = mode_key
 
@@ -561,7 +584,7 @@ if st.session_state.current_image:
             else:
                 st.error(f"Analysis failed: {err}\n\nTry a clearer image with better lighting.")
 
-    # 2. STATIC RENDERING — on every rerun
+    # 2. STATIC RENDERING
     elif st.session_state.analysis_result and st.session_state.analysis_mode == mode_key:
         tag_class = TAG_CLASSES[mode_key]
         tag_text  = TAGS[mode_key]
@@ -576,7 +599,7 @@ if st.session_state.current_image:
         with st.container(border=True):
             st.markdown(st.session_state.analysis_result)
 
-    # 3. DOWNLOAD + CLEAR — always visible when result exists
+    # 3. DOWNLOAD + CLEAR
     if st.session_state.analysis_result and st.session_state.analysis_mode == mode_key:
         st.markdown("<br>", unsafe_allow_html=True)
         col_dl, col_clear = st.columns([3, 1])
@@ -589,30 +612,27 @@ if st.session_state.current_image:
                 use_container_width=True,
             )
         with col_clear:
-            if st.button("🗑️ Clear", use_container_width=True):
+            if st.button("🗑️ Clear", use_container_width=True, type="secondary"):
                 st.session_state.analysis_result = None
                 st.session_state.analysis_mode   = None
+                st.session_state.current_image   = None
                 st.rerun()
 
 else:
-    hints = {
-        "reaction": "📸 Snap or upload an image of your reactants to begin",
-        "retro":    "🔬 Snap or upload the target molecule structure",
-        "compound": "🧪 Snap or upload any chemical compound",
-    }
     st.markdown(f"""
-    <div style="text-align:center; padding:2rem; color:#6b6b80;
-                font-family:'Space Mono',monospace; font-size:0.8rem;
-                border:1px dashed #2a2a3a; border-radius:12px; margin-top:1rem;">
-        {hints[mode_key]}
+    <div style="text-align:center; padding:2.5rem; color:#8b8b9e;
+                font-family:'Space Mono',monospace; font-size:0.85rem;
+                background: rgba(30, 30, 45, 0.3); border: 2px dashed rgba(255,255,255,0.05); 
+                border-radius:16px; margin-top:1rem; box-shadow: inset 0 4px 10px rgba(0,0,0,0.2);">
+        {hint}
     </div>
     """, unsafe_allow_html=True)
 
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown("""
-<div style="text-align:center; padding:2rem 0 0.5rem; color:#3a3a4a;
-            font-family:'Space Mono',monospace; font-size:0.62rem; letter-spacing:0.1em;">
-    CHEMLENS v2 · GEMINI 1.5 FLASH · FOR EDUCATIONAL USE
+<div style="text-align:center; padding:3rem 0 1rem; color:#4a4a5a;
+            font-family:'Space Mono',monospace; font-size:0.65rem; letter-spacing:0.15em;">
+    CHEMLENS PRO · POWERED BY GEMINI 1.5 FLASH
 </div>
 """, unsafe_allow_html=True)
