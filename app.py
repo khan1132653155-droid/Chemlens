@@ -235,30 +235,32 @@ if "current_image" not in st.session_state:
     st.session_state.current_image = None
 
 
-# ── API Key resolution ─────────────────────────────────────────────────────────
-# Priority: Streamlit Secrets → sidebar input (fallback for local dev)
-_secret_key = st.secrets.get("GEMINI_API_KEY", "") if hasattr(st, "secrets") else ""
+# ── Configure Gemini Securely ──────────────────────────────────────────────────
+SYSTEM_INSTRUCTION = """You are an expert chemistry assistant with deep knowledge of 
+organic, inorganic, physical, and analytical chemistry. You provide accurate, 
+structured, and educational chemistry analysis. Always use proper chemical notation."""
+
+# Safely fetch the API key from Streamlit Secrets
+try:
+    api_key = st.secrets["GEMINI_API_KEY"]
+except (KeyError, FileNotFoundError):
+    st.error("🚨 API key not found! Developer: Please add GEMINI_API_KEY to Streamlit Secrets.")
+    st.stop()
+
+try:
+    genai.configure(api_key=api_key)
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-flash",
+        system_instruction=SYSTEM_INSTRUCTION
+    )
+except Exception as e:
+    st.error(f"API configuration error: {e}")
+    st.stop()
 
 
-# ── Sidebar — API Key (fallback) + Settings + History ─────────────────────────
+# ── Sidebar — Settings + History ───────────────────────────────────────────────
 with st.sidebar:
     st.markdown("### ⚗️ ChemLens")
-    st.markdown("---")
-
-    # Show key input only if no secret is configured
-    if _secret_key:
-        api_key = _secret_key
-        st.success("🔑 API key loaded from secrets", icon="✅")
-    else:
-        st.markdown("**🔑 Gemini API Key**")
-        api_key = st.text_input(
-            label="API Key",
-            type="password",
-            placeholder="Paste your key here...",
-            label_visibility="collapsed"
-        )
-        st.caption("[Get free key →](https://aistudio.google.com)")
-
     st.markdown("---")
 
     # Explain level toggle
@@ -293,25 +295,6 @@ st.markdown("""
     <div class="hero-sub">Point. Snap. Understand.</div>
 </div>
 """, unsafe_allow_html=True)
-
-if not api_key:
-    st.info("👈 Paste your Gemini API key in the sidebar to begin.")
-    st.stop()
-
-# ── Configure Gemini ───────────────────────────────────────────────────────────
-SYSTEM_INSTRUCTION = """You are an expert chemistry assistant with deep knowledge of 
-organic, inorganic, physical, and analytical chemistry. You provide accurate, 
-structured, and educational chemistry analysis. Always use proper chemical notation."""
-
-try:
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel(
-        model_name="gemini-1.5-flash",
-        system_instruction=SYSTEM_INSTRUCTION
-    )
-except Exception as e:
-    st.error(f"API configuration error: {e}")
-    st.stop()
 
 
 # ── Mode selector ──────────────────────────────────────────────────────────────
@@ -575,8 +558,6 @@ if st.session_state.current_image:
             err = str(e)
             if "quota" in err.lower() or "429" in err:
                 st.error("⚠️ API quota exceeded. Wait a minute or check your usage at aistudio.google.com")
-            elif "api_key" in err.lower() or "400" in err:
-                st.error("⚠️ Invalid API key. Double-check it in the sidebar.")
             else:
                 st.error(f"Analysis failed: {err}\n\nTry a clearer image with better lighting.")
 
