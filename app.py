@@ -214,7 +214,10 @@ SYSTEM_INSTRUCTION = """You are an expert chemistry assistant with deep knowledg
 organic, inorganic, physical, and analytical chemistry. You provide accurate, 
 structured, and educational chemistry analysis. Always use proper chemical notation."""
 
-_secret_key = st.secrets.get("GEMINI_API_KEY", "") if hasattr(st, "secrets") else ""
+try:
+    _secret_key = st.secrets.get("GEMINI_API_KEY", "") if hasattr(st, "secrets") else ""
+except Exception:
+    _secret_key = ""
 
 try:
     if not _secret_key:
